@@ -2,6 +2,7 @@ package go_database_mysql
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"testing"
 	"time"
@@ -58,10 +59,12 @@ func TestQuerySqlComplex(t *testing.T) {
 	}
 
 	for rows.Next() {
-		var id, name, email string
+		var id, name string
+		var email sql.NullString
 		var balance int
 		var rating float64
-		var birthdate, created_at time.Time
+		var birthdate sql.NullTime
+		var created_at time.Time
 		var married bool
 
 		err := rows.Scan(&id, &name, &email, &balance, &rating, &birthdate, &married, &created_at)
@@ -71,10 +74,14 @@ func TestQuerySqlComplex(t *testing.T) {
 		fmt.Println("===========================")
 		fmt.Println("Id :", id)
 		fmt.Println("Name :", name)
-		fmt.Println("Email :", email)
+		if email.Valid {
+			fmt.Println("Email :", email)
+		}
 		fmt.Println("Balance :", balance)
 		fmt.Println("Rating :", rating)
-		fmt.Println("Birthdate :", birthdate)
+		if birthdate.Valid {
+			fmt.Println("Birthdate :", birthdate)
+		}
 		fmt.Println("Married :", married)
 		fmt.Println("Created At :", created_at)
 
