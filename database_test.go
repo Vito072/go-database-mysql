@@ -12,7 +12,7 @@ func TestDatabase(t *testing.T) {
 }
 
 func TestOpenConnection(t *testing.T) {
-	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/go-database")
+	db, err := sql.Open("mysql", "root:@tcp(localhost:3306)/go-database?parseTime=true")
 	if err != nil {
 		panic(err)
 	}
