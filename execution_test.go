@@ -95,11 +95,12 @@ func TestSqlInjection(t *testing.T) {
 
 	ctx := context.Background()
 
-	username := "admin"
-	password := "admin"
+	username := "admin'; #"
+	password := "salah"
 
 	script := "SELECT username, password FROM user WHERE username ='" + username +
 		"'AND password = '" + password + "'LIMIT 1"
+	fmt.Println(script)
 	rows, err := db.QueryContext(ctx, script)
 	if err != nil {
 		panic(err)
