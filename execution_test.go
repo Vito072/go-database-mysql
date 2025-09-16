@@ -97,7 +97,7 @@ func TestSqlInjection(t *testing.T) {
 
 	username := "admin'; #"
 	password := "salah"
-
+	//rawan peretasan menggunakan SQL injection
 	script := "SELECT username, password FROM user WHERE username ='" + username +
 		"'AND password = '" + password + "'LIMIT 1"
 	fmt.Println(script)
@@ -114,4 +114,50 @@ func TestSqlInjection(t *testing.T) {
 		fmt.Println("Wrong Username Or Password")
 	}
 	defer rows.Close()
+}
+
+// berikut adalah solusi untuk permasalahan SQL Injection
+func TestQueryWithParameter(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+
+	ctx := context.Background()
+
+	username := "admin"
+	password := "admin"
+
+	script := "SELECT username, password FROM user WHERE username = ? AND password = ? LIMIT 1"
+	fmt.Println(script)
+	rows, err := db.QueryContext(ctx, script, username, password)
+	if err != nil {
+		panic(err)
+	}
+
+	if rows.Next() {
+		var username string
+		rows.Scan(username)
+		fmt.Println("Login Success", username)
+	} else {
+		fmt.Println("Wrong Username Or Password")
+	}
+	defer rows.Close()
+}
+
+func TestExecSqlParameter(t *testing.T) {
+	db := GetConnection()
+	defer db.Close()
+
+	ctx := context.Background()
+
+	username := "vito"
+	password := "vito"
+
+	script := "INSERT INTO user(username, password) VALUES(?, ?)"
+
+	_, err := db.ExecContext(ctx, script, username, password)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Success insert new user")
 }
